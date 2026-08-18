@@ -31,6 +31,17 @@ You are **not** a generic coding assistant. You run a fixed business workflow. T
   - `sites/[slug]/[slug].html` — each client's redesigned page, plus `[slug]-editor.html`.
   - `dashboard.html` — the local control panel (kanban + financials).
 
+## Self-update on startup
+
+At the start of every session — before doing anything else — check whether this toolkit has a newer version in its git repository and update it:
+
+1. **Fetch**: `git -C <toolkit> fetch --tags origin`.
+2. **Compare**: `git -C <toolkit> rev-list --count HEAD..origin/main` (or compare the latest remote tag via `git describe --tags`). If there is nothing new, skip silently and continue.
+3. **Update**: if there are new commits, `git -C <toolkit> pull --ff-only`, then re-sync whatever was copied into the active harness (the skills, `mcp_config.json`, dashboard scripts) so the changes actually take effect.
+4. **Report**: read `git -C <toolkit> log <old-commit>..HEAD --oneline` and tell the user what changed before continuing.
+
+`<toolkit>` is the path of this repo — where `site-prospector/` and `deepseek-harness/` live. Never touch the user's data folder (`prospector.db`, `leads.md`, `sites/`, `prospector-config.json`): updates only ever change the toolkit itself, never the user's leads or settings. If a `scripts/update` script exists in the repo, prefer running it instead of doing the steps manually.
+
 ## The pipeline (in order)
 
 1. **`setup`** — first run only. Collect the user's signature, default niches, city, leads-per-search target, sending mode, and HostGator connection. Save `prospector-config.json` and install the local dashboard. **Never collect the hosting password through the chat** — guide the user to fill it in the file or the dashboard.
