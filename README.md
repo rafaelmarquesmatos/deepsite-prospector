@@ -1,19 +1,19 @@
 # Site Prospector
 
-Semi-automated client prospecting for businesses with weak websites: find high-potential businesses on Google Maps, build them a premium redesign, publish it on HostGator, and send a proposal by email — all driven by an AI assistant through natural language.
+Prospecção semiautomática de clientes com site fraco: encontra negócios com alto potencial no Google Maps, cria um redesign premium, publica na HostGator e envia a proposta por e-mail — tudo comandado pelo assistente de IA em linguagem natural.
 
-**Agent-neutral.** This is a portable skills + MCP toolkit, not a plugin tied to any vendor. It works with any AI agent/IDE that supports **MCP servers** and **skills** (Claude Code / Claude Cowork, Gemini CLI / Antigravity, Cursor, Codex, opencode, and others). The CRM, the dashboard, and the templates are plain Python/SQLite/HTML with zero agent-specific dependencies.
+**Neutro em relação a agente.** É um toolkit portátil de skills + MCP, não um plugin preso a nenhum fornecedor. Funciona em qualquer agente/IDE de IA que suporte **servidores MCP** e **skills** (Claude Code / Claude Cowork, Gemini CLI / Antigravity, Cursor, Codex, opencode e outros). O CRM, o painel e as templates são Python/SQLite/HTML puros, sem nenhuma dependência específica de agente.
 
-The business search runs in the **browser** (Playwright MCP) — no Google API key required, no vendor lock-in. A browser is used only to evaluate each lead's website and find the email.
+A busca de negócios roda no **navegador** (MCP Playwright) — sem API key do Google, sem vínculo com fornecedor. O navegador entra só para avaliar o site de cada lead e achar o e-mail.
 
-## Toolkit layout
+## Estrutura do toolkit
 
 ```
-site-prospector/               ← this folder is the toolkit
-├── mcp_config.json            defines the MCP servers (CRM + Playwright browser)
-├── prospector_mcp.py          CRM MCP server (SQLite)
-├── dashboard/                 local dashboard (Python/SQLite) — ready-to-copy
-└── skills/                    the 7 skills (SKILL.md)
+site-prospector/               ← esta pasta é o toolkit
+├── mcp_config.json            define os servidores MCP (CRM + navegador Playwright)
+├── prospector_mcp.py          servidor MCP do CRM (SQLite)
+├── dashboard/                 painel local (Python/SQLite) — pronto para copiar
+└── skills/                    as 7 skills (SKILL.md)
     ├── setup/
     ├── maps-prospecting/
     ├── premium-redesign/
@@ -23,49 +23,49 @@ site-prospector/               ← this folder is the toolkit
     └── service-contract/
 ```
 
-## Installation
+## Instalação
 
-### 1. Register the MCP servers
+### 1. Registrar os servidores MCP
 
-Register the two MCP servers from `mcp_config.json` in your agent's MCP configuration:
+Registre os dois servidores MCP do `mcp_config.json` na configuração de MCP do seu agente:
 
-- **prospector-crm** — the local CRM server (`prospector_mcp.py`). Point `--folder` at your project folder (where `prospector.db`, the leads and the sites live).
-- **playwright** — the browser automation server (`@playwright/mcp`), used to prospect on Google Maps, evaluate client websites, and find emails.
+- **prospector-crm** — o servidor local do CRM (`prospector_mcp.py`). Aponte `--folder` para a pasta do seu projeto (onde ficam `prospector.db`, os leads e os sites).
+- **playwright** — o servidor de automação de navegador (`@playwright/mcp`), usado para prospectar no Google Maps, avaliar sites de clientes e achar e-mails.
 
-Every agent has its own MCP config location (check your agent's docs). The JSON schema is the standard MCP one, so it's the same for all of them.
+Cada agente tem seu próprio local de config de MCP (veja a documentação do seu). O schema JSON é o padrão MCP, então é o mesmo para todos.
 
-### 2. Install the skills
+### 2. Instalar as skills
 
-Copy the `skills/` folder into your agent's skills directory so the assistant can load them on demand:
+Copie a pasta `skills/` para o diretório de skills do seu agente, para que o assistente consiga carregá-las sob demanda:
 
 - **Claude Code:** `~/.claude/skills/`
-- **Gemini / Antigravity:** `~/.gemini/skills/` (or `.agents/skills/` in the project)
-- **opencode:** `.opencode/skills/` in the workspace root
-- **Cursor:** check Cursor's skills/rules docs for your version
+- **Gemini / Antigravity:** `~/.gemini/skills/` (ou `.agents/skills/` no projeto)
+- **opencode:** `.opencode/skills/` na raiz do workspace
+- **Cursor:** consulte a documentação de skills/rules da sua versão
 
-The skills are plain `SKILL.md` markdown with YAML frontmatter — the same format most agents use. If your agent uses a different convention, adapt the folder layout only; the content is the logic.
+As skills são `SKILL.md` em markdown com frontmatter YAML — o mesmo formato que a maioria dos agentes usa. Se o seu agente usar outra convenção, adapte apenas a estrutura de pastas; o conteúdo é a lógica.
 
-### 3. Configure the Prospector
+### 3. Configurar o Prospector
 
-Open the project folder and tell the assistant **"set up the prospector"**. The `setup` skill collects your details, the HostGator connection, and installs the local dashboard.
+Abra a pasta do projeto e diga ao assistente **"configurar o prospector"**. A skill `setup` coleta seus dados, a conexão HostGator e instala o painel local.
 
-## How to use (natural language)
+## Como usar (linguagem natural)
 
-1. **"Prospect nutritionists in São Paulo"** → browses Google Maps, qualifies (high rating + weak site + email), and fills the dashboard.
-2. **"Redesign the top 5"** → premium redesign + visual editor + before/after comparator.
-3. **"Publish to HostGator"** → uploads pages and the cover page, verifies HTTPS.
-4. **"Send the proposal"** → anti-spam email draft ready to review.
-5. After that: contract, and the `dashboard.html` manages everything (kanban + financials).
+1. **"prospecta nutricionistas em São Paulo"** → navega no Google Maps, qualifica (nota alta + site ruim + e-mail) e alimenta o dashboard.
+2. **"redesenha os 5 melhores"** → redesign premium + editor visual + comparador antes/depois.
+3. **"publica na HostGator"** → sobe as páginas e a página-capa, verifica HTTPS.
+4. **"manda a proposta"** → rascunho de e-mail anti-spam pronto para revisar.
+5. Depois: contrato, e o `dashboard.html` administra tudo (kanban + financeiro).
 
-## How it stays agent-neutral
+## Como ele se mantém neutro
 
-- **No vendor plugin files** — only standard MCP config, Python, SQLite, HTML, and `SKILL.md` files.
-- **No hardcoded agent paths** — paths are placeholders you fill in for your machine and project folder.
-- **Browser-based Google Maps search** — no Google Maps Platform API key required.
-- **Local CRM + dashboard** — all data lives in your computer's `prospector.db`; nothing depends on a cloud connector.
-- **Any email provider** — the proposal skill drafts via your email MCP/connector or a plain compose URL.
+- **Sem arquivos de plugin de fornecedor** — só config MCP padrão, Python, SQLite, HTML e `SKILL.md`.
+- **Sem caminhos de agente fixos** — os caminhos são placeholders que você preenche para a sua máquina e pasta do projeto.
+- **Busca no Google Maps via navegador** — sem API key do Google Maps Platform.
+- **CRM + dashboard locais** — todos os dados ficam no seu computador, no `prospector.db`; nada depende de conector em nuvem.
+- **Qualquer provedor de e-mail** — a skill de proposta gera o rascunho via seu MCP/conector de e-mail ou por um link de compose simples.
 
-## Notes
+## Observações
 
-- Currency is shown as `R$` (BRL) — the workflow targets the Brazilian market (HostGator hosting, WhatsApp as the primary contact channel). Adjust the templates if you operate elsewhere.
-- The `dashboard.html` is a single self-contained panel: kanban drag & drop, editing, funnel, contracts and financials. Double-click `start-dashboard.bat` (Windows) / `start-dashboard.command` (macOS) to run it with the live database.
+- A moeda aparece como `R$` (BRL) — o fluxo mira o mercado brasileiro (hospedagem HostGator, WhatsApp como canal de contato principal). Ajuste as templates se operar em outro país.
+- O `dashboard.html` é um painel único autocontido: kanban com drag & drop, edição, funil, contratos e financeiro. Duplo clique em `start-dashboard.bat` (Windows) / `start-dashboard.command` (macOS) roda com o banco de dados conectado.
