@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>A new version of your site — __CLIENT_NAME__</title>
+<style>
+  :root{--bg:#FAF9F5;--ink:#1F1E1D;--muted:#6b6963;--acc:#C15F3C;--card:#fff;--line:#e6e2d8}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.6}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+  .stage{width:min(1560px,96vw);margin:0 auto}
+  header{padding:56px 0 36px;text-align:center}
+  .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);font-weight:700;margin-bottom:14px}
+  h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(28px,4.5vw,44px);font-weight:600;letter-spacing:-.01em}
+  h1 em{font-style:normal;color:var(--acc)}
+  .sub{color:var(--muted);max-width:560px;margin:16px auto 0;font-size:17px}
+  .author{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:22px;color:var(--muted);font-size:14px}
+  .author b{color:var(--ink)}
+  .toggle{display:flex;justify-content:center;gap:0;margin:34px 0 18px}
+  .toggle button{border:1px solid var(--line);background:var(--card);padding:12px 28px;font-size:15px;font-weight:600;cursor:pointer;color:var(--muted)}
+  .toggle button:first-child{border-radius:10px 0 0 10px}
+  .toggle button:last-child{border-radius:0 10px 10px 0}
+  .toggle button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .frame{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 10px 40px rgba(31,30,29,.08)}
+  .frame .bar{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--line);background:#f4f2ec}
+  .dot{width:10px;height:10px;border-radius:50%;background:#d9d4c7}
+  .bar span{font-size:12px;color:var(--muted);margin-left:8px}
+  iframe{display:block;width:100%;height:80vh;min-height:520px;border:0;background:#fff}
+  .hide{display:none}
+  .cta{text-align:center;padding:44px 0 64px}
+  .cta p{color:var(--muted);max-width:520px;margin:0 auto 20px}
+  .btn{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;font-weight:700;padding:15px 34px;border-radius:12px;font-size:16px}
+  .btn:hover{background:#a94f30}
+  .micro{font-size:13px;color:var(--muted);margin-top:10px}
+  footer{border-top:1px solid var(--line);padding:22px 0 34px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Prepared especially for</div>
+    <h1>__CLIENT_NAME__, this is the <em>new version</em> of your site</h1>
+    <p class="sub">It is already live, in demo mode. Compare it with the current version using the buttons below — also open it on your phone.</p>
+    <div class="author">Made by <b>__AUTHOR__</b> · __PRESENTATION__</div>
+  </header>
+</div>
+<div class="stage">
+  <div class="toggle">
+    <button id="bBefore" onclick="view('before')">Current site</button>
+    <button id="bAfter" class="on" onclick="view('after')">New version</button>
+  </div>
+  <div class="frame">
+    <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span id="urlLabel">__NEW_URL__</span></div>
+    <iframe id="fAfter" src="__NEW_URL__" title="New version"></iframe>
+    <iframe id="fBefore" data-src="__OLD_URL__" class="hide" title="Current site"></iframe>
+  </div>
+</div>
+<div class="wrap">
+  <div class="cta">
+    <p>If you like what you see, reach out — I'll explain how the final publishing on your domain works and answer any questions.</p>
+    <a class="btn" href="https://wa.me/__WHATSAPP__?text=Hello%2C%20__AUTHOR_URL__!%20I%20saw%20the%20new%20version%20of%20my%20site%20and%20I%20want%20to%20talk." target="_blank" rel="noopener">Chat on WhatsApp</a>
+    <div class="micro">No obligation — the demo stays live so you can evaluate it at your own pace.</div>
+  </div>
+</div>
+<footer>This page is a private presentation created by __AUTHOR__ for __CLIENT_NAME__. No data is collected here.</footer>
+<script>
+function view(q){
+  var a=document.getElementById('fBefore'),d=document.getElementById('fAfter');
+  if(q==='before'&&!a.src){a.src=a.dataset.src}
+  a.classList.toggle('hide',q!=='before');d.classList.toggle('hide',q==='before');
+  document.getElementById('bBefore').classList.toggle('on',q==='before');
+  document.getElementById('bAfter').classList.toggle('on',q!=='before');
+  document.getElementById('urlLabel').textContent=(q==='before'?a.dataset.src:d.src);
+}
+</script>
+<!--
+PLACEHOLDERS (replace all before publishing):
+__CLIENT_NAME__   professional/business name (e.g. Gianluca Fernandes)
+__AUTHOR__        user's name (config signature.name)
+__AUTHOR_URL__    user's name URL-encoded for the wa.me text
+__PRESENTATION__  short presentation (config signature.presentation)
+__WHATSAPP__      USER's WhatsApp in 55DDDNUMBER format (config signature.whatsapp)
+__NEW_URL__       public https URL of the new page (https://domain/clients/[slug]/)
+__OLD_URL__       URL of the client's current site (with http/https)
+Publish as proposal.html in the SAME folder as the new site: [baseFolder]/[slug]/proposal.html
+Note: some old sites block iframes (X-Frame-Options); the "before" iframe loads on demand —
+if it stays blank, swap __OLD_URL__ for a screenshot of the old site (sites/[slug]/old.png
+published alongside) using <img> in place of the iframe.
+-->
+</body>
+</html>

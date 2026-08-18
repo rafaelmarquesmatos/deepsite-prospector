@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<!-- DASHBOARD TEMPLATE (v2) — replace __DATA__ with the JSON (see SKILL.md). Save as dashboard.html in the ROOT of the connected folder -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prospector — Dashboard</title>
+<style>
+:root{
+ --paper:#F0EEE5;--surface:#FAF9F5;--white:#FFFFFF;--ink:#1F1E1D;--muted:#87837B;--line:#E3DFD5;
+ --accent:#D97757;--accent-2:#C15F3C;--accent-soft:#F4E5DE;
+ --ok:#6A9B72;--ok-soft:#E7EFE8;--warn:#C98A2D;--warn-soft:#F6ECD9;--gray:#B7B2A7;
+ --new:#7A8CA8;--redes:#9C7BB8;--pub:#5E9DA8;--prop:#C98A2D;--rep:#6A9B72;--clos:#4E8757;
+ --serif:Georgia,'Times New Roman',serif;--sans:-apple-system,'Segoe UI',Roboto,Inter,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);min-height:100vh;display:flex;overflow-x:hidden}
+aside{width:232px;min-height:100vh;background:var(--ink);color:#EDEAE3;padding:22px 14px;position:fixed;top:0;bottom:0;display:flex;flex-direction:column}
+.logo{display:flex;align-items:center;gap:10px;padding:0 10px 20px;border-bottom:1px solid #3A3835;margin-bottom:16px}
+.logo .burst{width:34px;height:34px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff}
+.logo b{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:.2px}
+.logo span{display:block;font-size:10.5px;color:#A8A399;margin-top:1px}
+nav{display:flex;flex-direction:column;gap:2px}
+nav button{display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:0;color:#CFC9BE;font-size:13.5px;font-weight:600;padding:10px 12px;border-radius:9px;cursor:pointer;text-align:left;font-family:var(--sans)}
+nav button:hover{background:#33312E;color:#fff}
+nav button.on{background:var(--accent);color:#fff}
+nav button .qt{font-size:11px;background:#00000030;padding:1px 8px;border-radius:10px}
+.side-foot{margin-top:auto;font-size:11px;color:#8B867C;padding:12px 10px;line-height:1.5}
+main{margin-left:232px;flex:1;min-width:0;padding:22px 28px 0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+#view{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding-bottom:14px}
+#view>.stats,#view>.panel,#view>.drag-tip,#view>.sites-grid{flex:0 0 auto}
+.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;flex:0 0 auto}
+.topbar h1{font-family:var(--serif);font-size:26px;font-weight:600;margin:0;letter-spacing:-.2px}
+.topbar .upd{color:var(--muted);font-size:12px}
+.search{margin-left:auto;background:var(--white);border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:13.5px;width:250px;color:var(--ink);font-family:var(--sans)}
+.search:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
+.stat{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.stat .n{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1.05}
+.stat .l{color:var(--muted);font-size:12px;margin-top:5px;font-weight:600}
+.stat.orange .n{color:var(--accent)}.stat.green .n{color:var(--clos)}.stat.amber .n{color:var(--warn)}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:20px}
+.panel h2{font-family:var(--serif);font-size:17px;margin:0 0 14px;font-weight:600}
+.funnel .row{display:grid;grid-template-columns:130px 1fr 40px;align-items:center;gap:12px;margin:9px 0;font-size:12.5px}
+.funnel .bar{height:22px;border-radius:6px;background:var(--paper);overflow:hidden}
+.funnel .fill{height:100%;border-radius:6px;min-width:2px}
+.fup-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.fup-item:last-child{border:0}
+.fup-item .days{background:var(--warn-soft);color:var(--warn);font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px;white-space:nowrap}
+.board{display:flex;gap:14px;overflow-x:auto;align-items:stretch;flex:1;min-height:0;padding-bottom:4px}
+.board::-webkit-scrollbar,.cards::-webkit-scrollbar{height:9px;width:9px}
+.board::-webkit-scrollbar-thumb,.cards::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+.board::-webkit-scrollbar-thumb:hover,.cards::-webkit-scrollbar-thumb:hover{background:var(--gray)}
+.col{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 8px 8px 12px;flex:0 0 272px;width:272px;display:flex;flex-direction:column;min-height:0}
+.cards{flex:1;overflow-y:auto;min-height:0;padding-right:6px}
+.col>h3{font-size:11.5px;text-transform:uppercase;letter-spacing:.7px;margin:2px 4px 12px;display:flex;justify-content:space-between;color:var(--muted);flex:0 0 auto}
+.card{background:var(--white);border:1px solid var(--line);border-top:3px solid var(--cor,var(--accent));border-radius:11px;padding:13px;margin-bottom:10px;box-shadow:0 1px 2px #0000000a}
+.card .nm{font-weight:700;font-size:13.5px}
+.card .mt{color:var(--muted);font-size:12px;margin:4px 0}
+.card .reason{color:var(--muted);font-size:12px;font-style:italic;margin:7px 0;border-left:2px solid var(--line);padding-left:8px;line-height:1.45}
+.actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.actions a{font-size:11px;font-weight:700;text-decoration:none;padding:4px 10px;border-radius:7px;background:var(--paper);color:var(--accent-2);border:1px solid var(--line)}
+.actions a:hover{background:var(--accent-soft);border-color:var(--accent)}
+.tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:1px}
+.fup{background:var(--warn-soft);color:var(--warn)}
+.value{color:var(--clos);font-weight:800;font-size:13px;margin-top:6px}
+select.st{font-size:11.5px;border:1px solid var(--line);border-radius:7px;padding:4px 6px;background:var(--surface);color:var(--ink);font-family:var(--sans);margin-top:9px;width:100%}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);text-align:left;padding:9px 10px;border-bottom:2px solid var(--line);cursor:pointer;white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:hover td{background:var(--surface)}
+.pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;white-space:nowrap}
+.panel.tab{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;margin-bottom:0}
+.twrap{flex:1;min-height:0;overflow:auto}
+.pagin{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted);flex:0 0 auto;border-top:1px solid var(--line);padding-top:12px}
+.pagin .info{margin-right:auto}
+.pagin button{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:12.5px;font-weight:700;color:var(--ink);cursor:pointer;font-family:var(--sans)}
+.pagin button:hover{border-color:var(--accent);color:var(--accent-2)}
+.pagin button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.pagin button:disabled{opacity:.4;cursor:default}
+.pagin select{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;background:var(--white);color:var(--ink);font-family:var(--sans)}
+.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.site-card{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.site-card .prev{height:190px;overflow:hidden;border-bottom:1px solid var(--line);background:var(--paper)}
+.site-card iframe{width:200%;height:380px;border:0;transform:scale(.5);transform-origin:0 0;pointer-events:none}
+.site-card{display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s}
+.site-card:hover{box-shadow:0 6px 18px #00000014;transform:translateY(-2px)}
+.site-card .info{padding:14px 16px 12px}
+.s-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.s-nm{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-sub{color:var(--muted);font-size:12px;margin:3px 0 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-main{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.s-main a{text-align:center;padding:9px 6px;border-radius:9px;font-size:12.5px;font-weight:700;text-decoration:none}
+.s-main .prim{background:var(--accent);color:#fff}
+.s-main .prim:hover{background:var(--accent-2)}
+.s-main .sec{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+.s-main .sec:hover{border-color:var(--accent);color:var(--accent-2)}
+.s-icons{display:flex;border-top:1px solid var(--line);padding-top:9px;margin:0 -4px}
+.s-icons a{flex:1;text-align:center;font-size:11.5px;font-weight:600;color:var(--muted);text-decoration:none;padding:5px 2px;border-radius:7px}
+.s-icons a:hover{background:var(--paper);color:var(--accent-2)}
+.s-icons a.del:hover{color:#B0483B;background:#B0483B14}
+.fin-check{width:17px;height:17px;accent-color:var(--clos);cursor:pointer}
+select.mini{border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:12px;background:var(--surface);color:var(--ink);font-family:var(--sans);cursor:pointer}
+.btn-ct{display:inline-block;font-size:12px;font-weight:700;text-decoration:none;padding:6px 12px;border-radius:8px;margin:2px 4px 2px 0;white-space:nowrap}
+.btn-ct.ver{background:var(--accent);color:#fff}
+.btn-ct.ver:hover{background:var(--accent-2)}
+.btn-ct.download{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+.btn-ct.download:hover{border-color:var(--accent);color:var(--accent-2)}
+.btn-ct.signed{background:var(--ok-soft);color:var(--ok)}
+.ct-pending{background:#B7B2A733;color:#6E6A63}.ct-sent{background:var(--warn-soft);color:var(--warn)}.ct-signed{background:var(--ok-soft);color:var(--ok)}
+#doc-bg{position:fixed;inset:0;background:#000000AA;display:none;z-index:60;flex-direction:column}
+#doc-bg.open{display:flex}
+.doc-bar{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--ink);color:#EDEAE3;flex:0 0 auto}
+.doc-bar b{font-family:var(--serif);font-size:15px}
+.doc-bar .sp{flex:1}
+.doc-bar button{border:0;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+.doc-bar .print{background:var(--accent);color:#fff}
+.doc-bar .print:hover{background:var(--accent-2)}
+.doc-bar .close{background:#3A3835;color:#EDEAE3}
+#doc-frame{flex:1;border:0;width:100%;background:#E9E7E1}
+.empty{color:var(--muted);font-size:12.5px;text-align:center;padding:14px 4px}
+.card[draggable=true]{cursor:grab}
+.card.dragging{opacity:.45;transform:rotate(1.5deg)}
+.col.target{outline:2px dashed var(--accent);outline-offset:-4px;background:var(--accent-soft)}
+.drag-tip{color:var(--muted);font-size:11.5px;margin:0 0 10px}
+.hidden{display:none}
+.actions a.del{color:#B0483B}
+.mode{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px}
+.mode.db{background:var(--ok-soft);color:var(--ok)}
+.mode.file{background:var(--warn-soft);color:var(--warn)}
+#modal-bg{position:fixed;inset:0;background:#00000055;display:none;align-items:center;justify-content:center;z-index:50}
+#modal-bg.open{display:flex}
+#modal{background:var(--white);border-radius:16px;padding:22px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto}
+#modal h2{font-family:var(--serif);font-size:18px;margin:0 0 14px}
+#modal label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 4px}
+#modal input,#modal select,#modal textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:13px;font-family:var(--sans);color:var(--ink);background:var(--surface)}
+#modal .mrow{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+#modal .mbot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+#modal .mbot button{border:0;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+#modal .save{background:var(--accent);color:#fff}
+#modal .cancel{background:var(--paper);color:var(--ink)}
+@media(max-width:860px){aside{display:none}main{margin-left:0}}
+.cmp-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.cmp-tabs button{border:1px solid var(--line);background:var(--white);padding:8px 16px;border-radius:20px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--muted);font-family:var(--sans)}
+.cmp-tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1 1 auto;min-height:0}
+.cmp-col{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;min-height:0}
+.cmp-col .cab{padding:9px 14px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line)}
+.cmp-col .cab.before{color:var(--muted)} .cmp-col .cab.after{color:var(--accent)}
+.cmp-col iframe{flex:1 1 auto;width:100%;border:0;min-height:0;background:#fff}
+@media(max-width:900px){.cmp-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<aside>
+  <div class="logo"><div class="burst">✳</div><div><b>Prospector</b><span>client dashboard</span></div></div>
+  <nav id="nav"></nav>
+  <div class="side-foot">Powered by the <b>site-prospector</b> toolkit. A client replied or closed the deal? Tell your AI assistant and it updates everything here.</div>
+</aside>
+<main>
+  <div class="topbar"><h1 id="title">Overview</h1><span class="upd" id="upd"></span><span class="mode file" id="mode" title="Open via start-dashboard.bat to save to the database">file mode</span><button id="clear-ov" style="display:none;border:1px solid var(--line);background:var(--white);color:var(--muted);font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;cursor:pointer;font-family:var(--sans)" onclick="if(confirm('Discard the edits made in this browser and go back to the toolkit data?')){localStorage.removeItem('prospector_overrides');location.reload()}">clear local edits</button><input class="search" id="search" placeholder="Search client, niche, city..."></div>
+  <div id="view"></div>
+</main>
+<div id="doc-bg"><div class="doc-bar"><b id="doc-title">Contract</b><span class="sp"></span><button class="print" onclick="printDoc()">🖨 Print / Save PDF</button><button class="close" onclick="closeDoc()">Close ✕</button></div><iframe id="doc-frame"></iframe></div>
+<div id="modal-bg" onclick="if(event.target===this)closeEdit()"><div id="modal">
+<h2 id="m-title">Edit lead</h2>
+<label>Name</label><input id="m-name">
+<div class="mrow"><div><label>Email</label><input id="m-email"></div><div><label>Phone</label><input id="m-phone"></div></div>
+<div class="mrow"><div><label>WhatsApp (55DDDnumber)</label><input id="m-whatsapp"></div><div><label>City</label><input id="m-city"></div></div>
+<div class="mrow"><div><label>Niche</label><input id="m-niche"></div><div><label>Status</label><select id="m-status"></select></div></div>
+<div class="mrow"><div><label>Value (R$)</label><input id="m-value" type="number" step="50"></div><div><label>Proposal date</label><input id="m-proposalDate" type="date"></div></div>
+<div class="mrow"><div><label>Monthly maintenance (R$)</label><input id="m-maintenance" type="number" step="10"></div><div><label>Payment received?</label><select id="m-paid"><option value="0">No</option><option value="1">Yes</option></select></div></div>
+<div class="mrow"><div><label>Contract</label><select id="m-contractStatus"><option value="pending">Pending</option><option value="sent">Sent</option><option value="signed">Signed</option></select></div><div><label>Contract date</label><input id="m-contractDate" type="date"></div></div>
+<div class="mrow"><div><label>Client CPF/CNPJ</label><input id="m-clientDoc" placeholder="for the contract"></div><div><label>Client address</label><input id="m-clientAddress" placeholder="street, number — for the contract"></div></div>
+<label>Published URL</label><input id="m-newUrl">
+<label>Notes</label><textarea id="m-notes" rows="2"></textarea>
+<div class="mbot"><button class="cancel" onclick="closeEdit()">Cancel</button><button class="save" onclick="saveEdit()">Save</button></div>
+</div></div>
+<script id="dados" type="application/json">__DATA__</script>
+<script>
+var D=JSON.parse(document.getElementById('dados').textContent);
+var OV=JSON.parse(localStorage.getItem('prospector_overrides')||'{}');
+var MODE='file';
+function applyOv(arr){return arr.filter(function(l){return !(OV[l.slug]&&OV[l.slug]._del)}).map(function(l){return Object.assign({},l,OV[l.slug]||{})})}
+var leads=applyOv(D.leads||[]);
+if(Object.keys(OV).length)document.getElementById('clear-ov')&&(document.getElementById('clear-ov').style.display='inline-block');
+fetch('/api/leads',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){MODE='db';leads=j;fetch('/api/config',{cache:'no-store'}).then(function(r){return r.json()}).then(function(c){CFG=(c&&c.provider!==undefined)?c.provider:c;HG=(c&&c.hostgator)||{};if(view==='config')render()});var m=document.getElementById('mode');m.textContent='database connected';m.className='mode db';m.title='Changes saved to prospector.db';var lb=document.getElementById('clear-ov');if(lb)lb.style.display='none';render()}).catch(function(){});
+var COLORS={new:'var(--new)',redesigned:'var(--redes)',published:'var(--pub)',proposed:'var(--prop)',replied:'var(--rep)',closed:'var(--clos)',discarded:'var(--gray)'};
+var STATUS_NAMES={new:'New',redesigned:'Redesigned',published:'Published',proposed:'Proposal sent',replied:'Replied',closed:'Closed',discarded:'Discarded'};
+var ORDER=['new','redesigned','published','proposed','replied','closed'];
+var view='overview',search='',sortCol='name',sortAsc=true,page=1,perPage='auto';
+function pageSize(){if(perPage!=='auto')return perPage;var v=document.getElementById('view');var h=v?v.clientHeight:600;return Math.max(4,Math.floor((h-165)/59))}
+document.getElementById('upd').textContent='updated at '+(D.updated||'—');
+function days(iso){if(!iso)return 0;return Math.floor((Date.now()-new Date(iso+'T12:00:00'))/864e5)}
+function active(){return filtered().filter(function(l){return l.status!=='discarded'})}
+function filtered(){var q=search.toLowerCase();return leads.filter(function(l){return !q||((l.name||'')+(l.niche||'')+(l.city||'')+(l.status||'')).toLowerCase().indexOf(q)>=0})}
+function reload(){return fetch('/api/leads',{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){leads=j;render()})}
+function saveOv(slug,ch){
+ if(MODE==='db'){fetch('/api/leads/'+encodeURIComponent(slug),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(ch)}).then(reload);return}
+ OV[slug]=Object.assign(OV[slug]||{},ch);localStorage.setItem('prospector_overrides',JSON.stringify(OV));leads=applyOv(D.leads||[]);render()}
+function remove(slug){if(!confirm('Delete this lead from the dashboard?'))return;
+ if(MODE==='db'){fetch('/api/leads/'+encodeURIComponent(slug),{method:'DELETE'}).then(reload);return}
+ OV[slug]=Object.assign(OV[slug]||{},{_del:true});localStorage.setItem('prospector_overrides',JSON.stringify(OV));leads=applyOv(D.leads||[]);render()}
+var CFG={};
+var editSlug=null;
+function openEdit(slug){editSlug=slug;var l=leads.filter(function(x){return x.slug===slug})[0]||{};
+ document.getElementById('m-title').textContent='Edit — '+(l.name||slug);
+ document.getElementById('m-status').innerHTML=Object.keys(STATUS_NAMES).map(function(st){return '<option value="'+st+'"'+(l.status===st?' selected':'')+'>'+STATUS_NAMES[st]+'</option>'}).join('');
+ ['name','email','phone','whatsapp','city','niche','value','proposalDate','newUrl','notes','maintenance','contractDate','clientDoc','clientAddress'].forEach(function(k){document.getElementById('m-'+k).value=l[k]==null?'':l[k]});
+ document.getElementById('m-paid').value=l.paid?1:0;document.getElementById('m-contractStatus').value=l.contractStatus||'pending';
+ document.getElementById('modal-bg').classList.add('open')}
+function closeEdit(){document.getElementById('modal-bg').classList.remove('open');editSlug=null}
+function saveEdit(){if(!editSlug)return;var ch={};
+ ['name','email','phone','whatsapp','city','niche','newUrl','notes','proposalDate','clientDoc','clientAddress'].forEach(function(k){ch[k]=document.getElementById('m-'+k).value||null});
+ ch.status=document.getElementById('m-status').value;
+ var v=document.getElementById('m-value').value;ch.value=v===''?null:parseFloat(v);
+ var mn=document.getElementById('m-maintenance').value;ch.maintenance=mn===''?null:parseFloat(mn);
+ ch.paid=parseInt(document.getElementById('m-paid').value);ch.contractStatus=document.getElementById('m-contractStatus').value;
+ var slug=editSlug;closeEdit();saveOv(slug,ch)}
+function setView(v){view=v;render()}
+function money(n){return 'R$ '+(n==null?0:n).toLocaleString('pt-BR')}
+function nav(){
+ var fu=filtered().filter(function(l){return l.status==='proposed'&&days(l.proposalDate)>=4});
+ var closedN=filtered().filter(function(l){return l.status==='closed'}).length;
+ var items=[['overview','Overview',null],['pipeline','Pipeline',active().length],['clients','Clients',filtered().length],['sites','Sites',filtered().filter(function(l){return['redesigned','published','proposed','replied','closed'].indexOf(l.status)>=0}).length],['comparator','Comparator',filtered().filter(function(l){return l.slug&&['redesigned','published','proposed','replied','closed'].indexOf(l.status)>=0}).length],['followups','Follow-ups',fu.length],['contracts','Contracts',closedN],['financials','Financials',null],['config','Settings',null]];
+ document.getElementById('nav').innerHTML=items.map(function(i){return '<button class="'+(view===i[0]?'on':'')+'" onclick="setView(\''+i[0]+'\')">'+i[1]+(i[2]!==null?'<span class="qt">'+i[2]+'</span>':'')+'</button>'}).join('');
+ document.getElementById('title').textContent=items.filter(function(i){return i[0]===view})[0][1];
+}
+function pillStatus(s){return '<span class="pill" style="background:color-mix(in srgb,'+COLORS[s]+' 18%,white);color:'+COLORS[s]+'">'+STATUS_NAMES[s]+'</span>'}
+function actions(l){var a=[];
+ if(l.oldSite)a.push('<a href="'+l.oldSite+'" target="_blank">old</a>');
+ if(l.slug&&['redesigned','published','proposed','replied','closed'].indexOf(l.status)>=0){a.push('<a href="sites/'+l.slug+'/'+l.slug+'.html" target="_blank">page</a>');a.push('<a href="sites/'+l.slug+'/'+l.slug+'-editor.html" target="_blank">edit site</a>')}
+ if(l.newUrl)a.push('<a href="'+l.newUrl+'" target="_blank">live ↗</a>');
+ if(l.whatsapp)a.push('<a href="https://wa.me/'+l.whatsapp+'" target="_blank">whatsapp</a>');
+ if(l.email&&l.email.indexOf('@')>0)a.push('<a href="mailto:'+l.email+'">email</a>');
+ a.push('<a href="#" onclick="openEdit(\''+l.slug+'\');return false">✎ data</a>');
+ a.push('<a href="#" class="del" onclick="remove(\''+l.slug+'\');return false">✕ delete</a>');
+ return '<div class="actions">'+a.join('')+'</div>'}
+
+function card(l){var f=l.status==='proposed'&&days(l.proposalDate)>=4?'<span class="tag fup">follow-up '+days(l.proposalDate)+'d</span>':'';
+ return '<div class="card" draggable="true" ondragstart="dragStart(event,\''+l.slug+'\')" ondragend="dragEnd(event)" style="--cor:'+COLORS[l.status]+'"><div class="nm">'+l.name+f+'</div><div class="mt">'+(l.rating?'★ '+l.rating+' ('+l.reviews+')':'')+(l.city?' · '+l.city:'')+'</div>'+(l.reason?'<div class="reason">'+l.reason+'</div>':'')+(l.notes?'<div class="mt">'+l.notes+'</div>':'')+(l.value?'<div class="value">'+money(l.value)+(l.maintenance?' <span style="color:var(--muted);font-weight:600;font-size:11px">+ '+money(l.maintenance)+'/month</span>':'')+'</div>':'')+actions(l)+'</div>'}
+function vOverview(){
+ var ls=filtered(),at=active();
+ var props=ls.filter(function(l){return l.status==='proposed'});
+ var fu=props.filter(function(l){return days(l.proposalDate)>=4});
+ var closed=ls.filter(function(l){return l.status==='closed'});
+ var revenue=closed.reduce(function(a,l){return a+(l.value||0)},0);
+ var potential=at.length*700;
+ var html='<div class="stats">'+[['Active leads',at.length,''],['Proposals out',props.length,''],['Pending follow-ups',fu.length,'amber'],['Closed',closed.length,'green'],['Closed revenue',money(revenue),'green'],['Potential (R$700/page)',money(potential),'orange']].map(function(s){return '<div class="stat '+s[2]+'"><div class="n">'+s[1]+'</div><div class="l">'+s[0]+'</div></div>'}).join('')+'</div>';
+ var max=Math.max.apply(null,ORDER.map(function(s){return ls.filter(function(l){return l.status===s}).length}).concat([1]));
+ html+='<div class="panel funnel"><h2>Pipeline funnel</h2>'+ORDER.map(function(s){var n=ls.filter(function(l){return l.status===s}).length;return '<div class="row"><span>'+STATUS_NAMES[s]+'</span><div class="bar"><div class="fill" style="width:'+(n/max*100)+'%;background:'+COLORS[s]+'"></div></div><b>'+n+'</b></div>'}).join('')+'</div>';
+ html+='<div class="panel"><h2>Pending follow-ups (4+ days without reply)</h2>'+(fu.length?fu.map(function(l){return '<div class="fup-item"><b>'+l.name+'</b><span class="days">'+days(l.proposalDate)+' days</span><span style="color:var(--muted);font-size:12px">proposal on '+l.proposalDate+'</span>'+(l.whatsapp?'<a style="margin-left:auto;font-size:12px;font-weight:700;color:var(--accent-2)" href="https://wa.me/'+l.whatsapp+'" target="_blank">reach on WhatsApp →</a>':'')+'</div>'}).join(''):'<div class="empty">No pending follow-ups. 👌</div>')+'</div>';
+ return html}
+function vPipeline(){var by={};filtered().forEach(function(l){(by[l.status]=by[l.status]||[]).push(l)});
+ return '<p class="drag-tip">Drag a card to change its status — the automatic ones (redesigned, published, proposed) are moved by the assistant itself; use dragging mainly for <b>Replied</b> and <b>Closed</b>.</p><div class="board">'+ORDER.concat(['discarded']).map(function(s){var arr=by[s]||[];return '<div class="col" data-st="'+s+'" ondragover="dragOver(event)" ondragleave="dragOut(event)" ondrop="drop(event,\''+s+'\')"><h3>'+STATUS_NAMES[s]+'<span>'+arr.length+'</span></h3><div class="cards">'+(arr.length?arr.map(card).join(''):'<div class="empty">drop here</div>')+'</div></div>'}).join('')+'</div>'}
+function vClients(){var ls=filtered().slice().sort(function(a,b){var x=a[sortCol]||'',y=b[sortCol]||'';return(x<y?-1:x>y?1:0)*(sortAsc?1:-1)});
+ var pp=pageSize();var total=ls.length,pages=Math.max(1,Math.ceil(total/pp));if(page>pages)page=pages;
+ var start=(page-1)*pp,end=Math.min(start+pp,total);ls=ls.slice(start,end);
+ return '<div class="panel tab"><div class="twrap"><table><thead><tr>'+[['name','Client'],['rating','Rating'],['reviews','Rev.'],['city','City'],['status','Status'],['value','Value'],['x','Contact / pages']].map(function(c){return '<th onclick="sortBy(\''+c[0]+'\')">'+c[1]+(sortCol===c[0]?(sortAsc?' ↑':' ↓'):'')+'</th>'}).join('')+'</tr></thead><tbody>'+ls.map(function(l){return '<tr><td><b>'+l.name+'</b><div style="color:var(--muted);font-size:11.5px">'+(l.email||'no email')+'</div></td><td>'+(l.rating?'★ '+l.rating:'—')+'</td><td>'+(l.reviews||'—')+'</td><td>'+(l.city||'—')+'</td><td>'+pillStatus(l.status)+'</td><td>'+(l.value?money(l.value):'—')+'</td><td>'+actions(l)+'</td></tr>'}).join('')+'</tbody></table></div><div class="pagin"><span class="info">Showing '+(total?start+1:0)+'–'+end+' of '+total+' clients</span><select onchange="changePerPage(this.value)"><option value="auto"'+(perPage==='auto'?' selected':'')+'>Auto ('+pp+' / page)</option>'+[10,25,50].map(function(n){return '<option value="'+n+'"'+(perPage===n?' selected':'')+'>'+n+' / page</option>'}).join('')+'</select><button onclick="goPage('+(page-1)+')"'+(page<=1?' disabled':'')+'>‹</button>'+Array.apply(null,{length:pages}).map(function(_,i){return '<button class="'+(page===i+1?'on':'')+'" onclick="goPage('+(i+1)+')">'+(i+1)+'</button>'}).join('')+'<button onclick="goPage('+(page+1)+')"'+(page>=pages?' disabled':'')+'>›</button></div></div>'}
+function goPage(n){page=n;render()}
+function changePerPage(v){perPage=v==='auto'?'auto':parseInt(v);page=1;render()}
+function vSites(){var ls=filtered().filter(function(l){return['redesigned','published','proposed','replied','closed'].indexOf(l.status)>=0});
+ return ls.length?'<div class="sites-grid">'+ls.map(function(l){
+  var pg='sites/'+l.slug+'/'+l.slug+'.html';
+  var prim=l.newUrl?'<a class="prim" href="'+l.newUrl+'" target="_blank">View live ↗</a>':'<a class="prim" href="'+pg+'" target="_blank">View page</a>';
+  var ic=[];
+  if(l.oldSite)ic.push('<a href="'+l.oldSite+'" target="_blank" title="client old site">old</a>');
+  if(l.newUrl)ic.push('<a href="'+pg+'" target="_blank" title="local version">local</a>');
+  if(l.whatsapp)ic.push('<a href="https://wa.me/'+l.whatsapp+'" target="_blank">whatsapp</a>');
+  if(l.email&&l.email.indexOf('@')>0)ic.push('<a href="mailto:'+l.email+'">email</a>');
+  ic.push('<a href="#" onclick="openEdit(\''+l.slug+'\');return false">✎ data</a>');
+  ic.push('<a href="#" class="del" onclick="remove(\''+l.slug+'\');return false">✕</a>');
+  return '<div class="site-card"><div class="prev"><iframe src="'+pg+'" loading="lazy"></iframe></div><div class="info"><div class="s-head"><span class="s-nm">'+l.name+'</span>'+pillStatus(l.status)+'</div><div class="s-sub">'+[l.niche,l.city,(l.rating?'★ '+l.rating+' ('+l.reviews+')':null)].filter(Boolean).join(' · ')+'</div><div class="s-main">'+prim+'<a class="sec" href="sites/'+l.slug+'/'+l.slug+'-editor.html" target="_blank">Edit site</a></div><div class="s-icons">'+ic.join('')+'</div></div></div>'
+ }).join('')+'</div>':'<div class="panel empty">No redesigned site yet — run the redesign skill.</div>'}
+function vFollowup(){var fu=filtered().filter(function(l){return l.status==='proposed'&&days(l.proposalDate)>=4});
+ return '<div class="panel"><h2>Proposals awaiting follow-up</h2>'+(fu.length?fu.map(card).join(''):'<div class="empty">No pending follow-ups.</div>')+'</div>'}
+function openContract(slug,name){document.getElementById('doc-title').textContent='Contract — '+name;document.getElementById('doc-frame').src='sites/'+slug+'/contract-'+slug+'.html';document.getElementById('doc-bg').classList.add('open')}
+function closeDoc(){document.getElementById('doc-bg').classList.remove('open');document.getElementById('doc-frame').src='about:blank'}
+function printDoc(){var f=document.getElementById('doc-frame');try{f.contentWindow.focus();f.contentWindow.print()}catch(e){window.open(f.src,'_blank');alert('Opened the contract in a new tab — use Ctrl+P to print/save as PDF.')}}
+function pillCt(st){st=st||'pending';return '<span class="pill ct-'+st+'">'+st.charAt(0).toUpperCase()+st.slice(1)+'</span>'}
+function vContracts(){var ls=filtered().filter(function(l){return l.status==='closed'});
+ if(!ls.length)return '<div class="panel empty">No closed client yet. When you close one, drag the card to "Closed" and ask your AI assistant to generate the contract.</div>';
+ return '<div class="panel" style="overflow-x:auto"><table><thead><tr><th>Client</th><th>Value</th><th>Maintenance</th><th>Contract</th><th>Date</th><th>Paid</th><th>Actions</th></tr></thead><tbody>'+ls.map(function(l){
+  var doc='sites/'+l.slug+'/contract-'+l.slug+'.html';
+  var action=(l.contractStatus&&l.contractStatus!=='pending')?'<a href="#" class="btn-ct ver" onclick="openContract(\''+l.slug+'\',\''+l.name.replace(/'/g,'')+'\');return false" title="open the contract sheet right here in the panel">👁 View contract</a><a href="sites/'+l.slug+'/contract-'+l.slug+'.docx" download class="btn-ct download" title="download the protected Word file that goes to the client">⬇ Download .docx</a>'+(l.contractStatus==='signed'?'<a href="sites/'+l.slug+'/contract-'+l.slug+'-signed.docx" download class="btn-ct signed">✓ Signed</a>':'')+'':'<span style="color:var(--muted);font-size:12px">ask your assistant for the contract</span>';
+  return '<tr><td><b>'+l.name+'</b></td><td>'+(l.value?money(l.value):'—')+'</td><td>'+(l.maintenance?money(l.maintenance)+'/month':'—')+'</td><td><select class="mini" onchange="saveOv(\''+l.slug+'\',{contractStatus:this.value})">'+['pending','sent','signed'].map(function(cs){return '<option value="'+cs+'"'+((l.contractStatus||'pending')===cs?' selected':'')+'>'+cs+'</option>'}).join('')+'</select></td><td>'+(l.contractDate||'—')+'</td><td><input type="checkbox" class="fin-check" '+(l.paid?'checked':'')+' onchange="saveOv(\''+l.slug+'\',{paid:this.checked?1:0})"></td><td>'+action+'</td></tr>'
+ }).join('')+'</tbody></table></div>'}
+function vFinancials(){var ls=filtered().filter(function(l){return l.status==='closed'});
+ var received=ls.filter(function(l){return l.paid}).reduce(function(a,l){return a+(l.value||0)},0);
+ var toReceive=ls.filter(function(l){return !l.paid}).reduce(function(a,l){return a+(l.value||0)},0);
+ var mrr=ls.reduce(function(a,l){return a+(l.maintenance||0)},0);
+ var html='<div class="stats">'+[['Received',money(received),'green'],['To receive',money(toReceive),'amber'],['Maintenance (MRR)',money(mrr)+'/month','orange'],['12-month projection',money(received+toReceive+mrr*12),'green']].map(function(x){return '<div class="stat '+x[2]+'"><div class="n">'+x[1]+'</div><div class="l">'+x[0]+'</div></div>'}).join('')+'</div>';
+ html+='<div class="panel" style="overflow-x:auto"><h2>Closed deals</h2>'+(ls.length?'<table><thead><tr><th>Client</th><th>Value</th><th>Paid</th><th>Maintenance/month</th><th>Contract</th></tr></thead><tbody>'+ls.map(function(l){return '<tr><td><b>'+l.name+'</b></td><td>'+(l.value?money(l.value):'—')+'</td><td><input type="checkbox" class="fin-check" '+(l.paid?'checked':'')+' onchange="saveOv(\''+l.slug+'\',{paid:this.checked?1:0})"></td><td>'+(l.maintenance?money(l.maintenance):'—')+'</td><td>'+pillCt(l.contractStatus)+'</td></tr>'}).join('')+'</tbody></table>':'<div class="empty">No closed deals yet — the projection starts with the first card dragged to Closed.</div>')+'</div>';
+ html+='<div class="panel"><h2>How the financials are fed</h2><p style="font-size:13px;color:var(--muted);margin:0">Value and maintenance come in when you close a deal (drag on the kanban or ✎ data). "Paid" you tick here with one click. The contract changes to "sent" when the assistant generates it — and to "signed" when you tick it.</p></div>';
+ return html}
+var PROVIDER_FIELDS=[['name','Full name / legal name'],['cpfCnpj','CPF or CNPJ'],['address','Address (street, number, neighborhood)'],['cityState','City/State'],['email','Email'],['whatsapp','WhatsApp (55DDDnumber)']];
+function vConfig(){
+ var db=MODE==='db';
+ var fields=PROVIDER_FIELDS.map(function(c){return '<div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:12px 0 4px">'+c[1]+'</label><input id="cfg-'+c[0]+'" value="'+((CFG[c[0]]||'').replace(/"/g,'&quot;'))+'" '+(db?'':'disabled')+' style="width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:var(--sans);color:var(--ink);background:var(--surface)"></div>'}).join('');
+ return '<div class="panel" style="max-width:640px"><h2>My details — contract signer</h2><p style="font-size:13px;color:var(--muted);margin:0 0 6px">Fill in once and every contract generated by the assistant already comes out with your details as CONTRACTOR complete. Saved in prospector-config.json on your computer.</p>'+fields+'<div style="margin-top:18px;display:flex;gap:10px;align-items:center"><button '+(db?'':'disabled')+' onclick="saveProvider()" style="border:0;border-radius:10px;padding:11px 22px;font-size:13.5px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff">Save my details</button><span id="cfg-ok" style="color:var(--ok);font-weight:700;font-size:13px;display:none">saved ✓</span>'+(db?'':'<span style="color:var(--warn);font-size:12.5px;font-weight:600">open via start-dashboard.bat to edit — or dictate the data to your AI assistant in setup</span>')+'</div></div>'+
+ '<div class="panel" style="max-width:640px"><h2>HostGator connection \u2014 automatic publishing</h2><p style="font-size:13px;color:var(--muted);margin:0 0 6px">Fill in once and publishing uploads sites on its own, no cPanel login. The password goes from this panel DIRECTLY to the file on your computer \u2014 it never goes through the chat.</p>'+[['user','cPanel username','text'],['domain','Main domain','text'],['server','Server (e.g. br1024.hostgator.com.br)','text'],['baseFolder','Base folder (default: clients)','text'],['password','cPanel password','password']].map(function(c){var ph=c[0]==='password'?(HG.passwordSet?'\u2022\u2022\u2022\u2022\u2022 saved \u2014 leave blank to keep':'paste the cPanel password'):'';return '<div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:12px 0 4px">'+c[1]+'</label><input id="hg-'+c[0]+'" type="'+c[2]+'" placeholder="'+ph+'" value="'+(c[0]==='password'?'':((HG[c[0]]||'').replace(/"/g,'&quot;')))+'" '+(db?'':'disabled')+' style="width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:14px;font-family:var(--sans);background:'+(db?'var(--white)':'#f0ede4')+'"></div>'}).join('')+'<div style="margin-top:18px;display:flex;gap:10px;align-items:center"><button '+(db?'':'disabled')+' onclick="saveHG()" style="border:0;border-radius:10px;padding:11px 22px;font-size:13.5px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff">Save connection</button><span id="hg-ok" style="color:var(--ok);font-weight:700;font-size:13px;display:none">saved \u2713</span>'+(db?(HG.passwordSet?'<span style="color:var(--ok);font-size:12.5px;font-weight:600">\u2713 password configured</span>':'<span style="color:var(--warn);font-size:12.5px;font-weight:600">password needed for automatic publishing</span>'):'<span style="color:var(--warn);font-size:12.5px;font-weight:600">open via start-dashboard.bat to save the connection</span>')+'</div></div>'+
+ '<div class="panel" style="max-width:640px"><h2>What about the client data?</h2><p style="font-size:13px;color:var(--muted);margin:0">Client CPF/CNPJ and address come in when they close the deal: ask over WhatsApp and (1) paste the answer to your AI assistant when generating the contract — it extracts and saves it — or (2) fill it in the ✎ data of the card. Anything missing comes out as "to fill in" on the draft.</p></div>'}
+function saveProvider(){var body={};PROVIDER_FIELDS.forEach(function(c){body[c[0]]=document.getElementById('cfg-'+c[0]).value||''});
+ fetch('/api/config',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider:body})}).then(function(){CFG=body;var ok=document.getElementById('cfg-ok');ok.style.display='inline';setTimeout(function(){ok.style.display='none'},2000)})}
+function saveHG(){var body={};['user','domain','server','baseFolder','password'].forEach(function(k){var el=document.getElementById('hg-'+k);if(el)body[k]=el.value||''});
+ fetch('/api/config',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({hostgator:body})}).then(function(){if(body.password)HG.passwordSet=true;['user','domain','server','baseFolder'].forEach(function(k){if(body[k]!==undefined)HG[k]=body[k]});var ok=document.getElementById('hg-ok');ok.style.display='inline';setTimeout(function(){ok.style.display='none';render()},1200)})}
+function sortBy(c){if(c==='x')return;if(sortCol===c)sortAsc=!sortAsc;else{sortCol=c;sortAsc=true}page=1;render()}
+var cmpSel=null;var HG={};
+function vComparator(){var ls=filtered().filter(function(l){return l.slug&&['redesigned','published','proposed','replied','closed'].indexOf(l.status)>=0});
+ if(!ls.length)return '<div class="panel"><div class="empty">No redesigned sites yet — run the redesign skill and the before/after shows up here.</div></div>';
+ if(!cmpSel||!ls.some(function(l){return l.slug===cmpSel}))cmpSel=ls[0].slug;
+ var l=ls.filter(function(x){return x.slug===cmpSel})[0];
+ var old=l.oldSite?((l.oldSite.indexOf('http')===0?l.oldSite:'https://'+l.oldSite)):null;
+ var newP='sites/'+l.slug+'/'+l.slug+'.html';
+ return '<div class="cmp-tabs">'+ls.map(function(x){return '<button class="'+(x.slug===cmpSel?'on':'')+'" onclick="cmpSel=\''+x.slug+'\';render()">'+x.name+'</button>'}).join('')+'</div>'
+ +'<div class="cmp-grid"><div class="cmp-col"><div class="cab before">Before — current site'+(old?' · <a href="'+old+'" target="_blank" style="color:inherit">open ↗</a>':'')+'</div>'+(old?'<iframe src="'+old+'" loading="lazy"></iframe>':'<div class="empty" style="padding:30px">No old site URL registered.</div>')+'</div>'
+ +'<div class="cmp-col"><div class="cab after">After — new version · <a href="'+newP+'" target="_blank" style="color:inherit">open ↗</a></div><iframe src="'+newP+'"></iframe></div></div>'
+ +'<div style="font-size:11.5px;color:var(--muted);margin-top:8px">Some old sites block embedded viewing — if the "Before" side is blank, use the "open ↗" link.</div>'}
+function render(){nav();document.getElementById('view').innerHTML={overview:vOverview,pipeline:vPipeline,clients:vClients,sites:vSites,comparator:vComparator,followups:vFollowup,contracts:vContracts,financials:vFinancials,config:vConfig}[view]()}
+var dragSlug=null;
+function dragStart(e,slug){dragSlug=slug;e.target.classList.add('dragging');e.dataTransfer.effectAllowed='move'}
+function dragEnd(e){e.target.classList.remove('dragging')}
+function dragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('target')}
+function dragOut(e){e.currentTarget.classList.remove('target')}
+function drop(e,st){e.preventDefault();e.currentTarget.classList.remove('target');if(!dragSlug)return;
+ var ch={status:st};
+ if(st==='closed'){var v=prompt('Closed! Amount charged (R$):','700');if(v!==null&&v!==''&&!isNaN(parseFloat(v)))ch.value=parseFloat(v)}
+ if(st==='proposed'&&!leads.filter(function(l){return l.slug===dragSlug})[0].proposalDate)ch.proposalDate=new Date().toISOString().slice(0,10);
+ saveOv(dragSlug,ch);dragSlug=null}
+document.getElementById('search').addEventListener('input',function(){search=this.value;page=1;render()});
+var rsz;window.addEventListener('resize',function(){clearTimeout(rsz);rsz=setTimeout(render,150)});
+render();
+</script>
+</body>
+</html>

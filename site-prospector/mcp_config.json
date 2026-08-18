@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "prospector-crm": {
+      "command": "python",
+      "args": [
+        "C:/PATH/TO/site-prospector/prospector_mcp.py",
+        "--folder",
+        "C:/PATH/TO/YOUR/PROJECT"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    }
+  }
+}
