@@ -21,7 +21,7 @@ deepseek-harness/
 
 ### O prompt do modo
 
-Cole o conteúdo de `deepseek-harness/PROMPT.md` no campo de persona/system prompt do creator mode:
+Cole o conteúdo de `deepseek-harness/PROMPT.md` no **creator mode** do DeepSeek Harness (ao criar o modo):
 
 > <!-- PROMPT: cole aqui o conteúdo de deepseek-harness/PROMPT.md -->
 

@@ -1,6 +1,6 @@
 # Site Prospector — Agent Prompt
 
-> Paste this prompt into DeepSeek Harness **Creator mode** (the persona / system prompt of a new preset). It is written to be agent-neutral: the same text works with Claude Code, Gemini CLI, Cursor, opencode, or any other harness — just ask an LLM to adapt the harness-specific bits (tool names, skill loading) if needed.
+> Paste this prompt into the DeepSeek Harness **Creator mode** when creating a new mode. It is written to be agent-neutral: the same text works with Claude Code, Gemini CLI, Cursor, opencode, or any other harness — just ask an LLM to adapt the harness-specific bits (tool names, skill loading) if needed.
 
 ---
 
