@@ -6,9 +6,35 @@ Prospecção semiautomática de clientes com site fraco: encontra negócios com 
 
 A busca de negócios roda no **navegador** (MCP Playwright) — sem API key do Google, sem vínculo com fornecedor. O navegador entra só para avaliar o site de cada lead e achar o e-mail.
 
+## Feito para o DeepSeek Harness (creator mode)
+
+Este projeto foi pensado para rodar como um **modo** (agent preset) do [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), criado pelo **creator mode**. O prompt abaixo é o que você cola no creator mode para transformar o assistente no Site Prospector.
+
+O preset pronto fica em `deepseek-harness/`:
+
+```
+deepseek-harness/
+├── PROMPT.md           ← o prompt do modo (em inglês)
+├── preset.yml          ← nome e descrição do preset
+└── agent.cordis.yml    ← composição do agente (persona + tools + skills)
+```
+
+### O prompt do modo
+
+Cole o conteúdo de `deepseek-harness/PROMPT.md` no campo de persona/system prompt do creator mode:
+
+> <!-- PROMPT: cole aqui o conteúdo de deepseek-harness/PROMPT.md -->
+
+> ⚠️ **Funciona em qualquer harness.** Este mesmo conteúdo é teoricamente independente de fornecedor: funciona em Claude Code, Gemini CLI, Cursor, opencode etc. Basta pedir a um LLM para adaptar os trechos específicos do harness (nomes de ferramentas, forma de carregar as skills, local da config MCP). A lógica do pipeline, as skills e as templates não mudam.
+
 ## Estrutura do toolkit
 
 ```
+deepseek-harness/              ← o modo pronto para o DeepSeek Harness (creator mode)
+├── PROMPT.md                  o prompt do modo (em inglês)
+├── preset.yml                 nome e descrição do preset
+└── agent.cordis.yml           persona + tools + skills
+
 site-prospector/               ← esta pasta é o toolkit
 ├── mcp_config.json            define os servidores MCP (CRM + navegador Playwright)
 ├── prospector_mcp.py          servidor MCP do CRM (SQLite)
@@ -38,6 +64,7 @@ Cada agente tem seu próprio local de config de MCP (veja a documentação do se
 
 Copie a pasta `skills/` para o diretório de skills do seu agente, para que o assistente consiga carregá-las sob demanda:
 
+- **DeepSeek Harness:** `.dsh/skills/` na raiz do projeto (ou use o preset de `deepseek-harness/`)
 - **Claude Code:** `~/.claude/skills/`
 - **Gemini / Antigravity:** `~/.gemini/skills/` (ou `.agents/skills/` no projeto)
 - **opencode:** `.opencode/skills/` na raiz do workspace
