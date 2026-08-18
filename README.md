@@ -61,14 +61,6 @@ Abra a pasta do projeto e diga ao assistente **"configurar o prospector"**. A sk
 4. **"manda a proposta"** → rascunho de e-mail anti-spam pronto para revisar.
 5. Depois: contrato, e o `dashboard.html` administra tudo (kanban + financeiro).
 
-## Como ele se mantém neutro
-
-- **Sem arquivos de plugin de fornecedor** — só config MCP padrão, Python, SQLite, HTML e `SKILL.md`.
-- **Sem caminhos de agente fixos** — os caminhos são placeholders que você preenche para a sua máquina e pasta do projeto.
-- **Busca no Google Maps via navegador** — sem API key do Google Maps Platform.
-- **CRM + dashboard locais** — todos os dados ficam no seu computador, no `prospector.db`; nada depende de conector em nuvem.
-- **Qualquer provedor de e-mail** — a skill de proposta gera o rascunho via seu MCP/conector de e-mail ou por um link de compose simples.
-
 ## Observações
 
 - A moeda aparece como `R$` (BRL) — o fluxo mira o mercado brasileiro (hospedagem HostGator, WhatsApp como canal de contato principal). Ajuste as templates se operar em outro país.
