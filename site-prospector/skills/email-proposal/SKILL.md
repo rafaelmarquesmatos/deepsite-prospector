@@ -48,7 +48,7 @@ Review the finished email against EVERY item; if it fails any, rewrite before cr
 
 ## Cover page (what the client sees on click)
 
-The email link leads to the cover page generated in `hostgator-deploy` (template in `references/proposal-cover-template.html`): client name at the top, before/after side by side and the user's signature. It exists to give the click credibility — the client sees their own business, not a strange link. Requirements: served over `https://`, personalized with real data, no request for personal data.
+The email link leads to the cover page generated in `deploy` (template in `references/proposal-cover-template.html`): client name at the top, before/after side by side and the user's signature. It exists to give the click credibility — the client sees their own business, not a strange link. Requirements: served over `https://`, personalized with real data, no request for personal data.
 
 ## After sending
 

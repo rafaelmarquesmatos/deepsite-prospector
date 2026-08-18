@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Initial configuration of the Site Prospector — collects your signature, niches, city and HostGator connection, and installs the local dashboard. Use when the user says "set up prospector", "setup", "start", "my details", or the first time any prospector skill runs without a prospector-config.json.
+description: Initial configuration of the Site Prospector — collects your signature, niches, city and optional hosting details, and installs the local dashboard. Use when the user says "set up prospector", "setup", "start", "my details", or the first time any prospector skill runs without a prospector-config.json.
 ---
 
 # Prospector — initial setup
@@ -19,9 +19,9 @@ Look for `prospector-config.json` in the project folder. If it exists, show a su
 - **Leads per search**: default 10.
 - **Proposal sending mode**: default "draft email for review".
 
-## 3. HostGator connection
+## 3. Hosting (optional)
 
-If hosting is already purchased: **do not collect the password through the chat**. Guide the user to fill in the `user`, `domain`, `server` and `password` cPanel fields in `prospector-config.json` (or in the Settings tab of the dashboard). The password lives only in the local file.
+Hosting is provider-agnostic and manual. Optionally collect the public `domain` where sites will live and the `baseFolder` subpath (default `clients`) — they are used only to build and verify the published URL. Publishing itself is manual: the `deploy` skill prepares the files and the user uploads them through their own hosting panel. No credentials are ever collected.
 
 ## 4. Save
 
@@ -32,7 +32,7 @@ If hosting is already purchased: **do not collect the password through the chat*
   "signature": { "name": "", "presentation": "", "whatsapp": "" },
   "prospecting": { "niches": ["nutritionists","psychologists","lawyers","psychiatrists"], "city": "", "leadsPerSearch": 10 },
   "sending": { "mode": "draft" },
-  "hostgator": { "user": "", "domain": "", "server": "", "password": "", "baseFolder": "clients" },
+  "hosting": { "domain": "", "baseFolder": "clients" },
   "provider": { "name": "", "cpfCnpj": "", "address": "", "cityState": "", "email": "", "whatsapp": "" }
 }
 ```
@@ -51,4 +51,4 @@ This toolkit uses two MCP servers:
 
 ## 7. Wrap up
 
-Confirm what was saved and explain the cycle: **prospect** (skill maps-prospecting) → **redesign** (premium-redesign) → **publish** (hostgator-deploy) → **propose** (email-proposal), with `dashboard.html` as the panel for everything.
+Confirm what was saved and explain the cycle: **prospect** (skill maps-prospecting) → **redesign** (premium-redesign) → **publish** (deploy) → **propose** (email-proposal), with `dashboard.html` as the panel for everything.

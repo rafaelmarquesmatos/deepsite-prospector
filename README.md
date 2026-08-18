@@ -1,6 +1,6 @@
 # Site Prospector
 
-Prospecção semiautomática de clientes com site fraco: encontra negócios com alto potencial no Google Maps, cria um redesign premium, publica na HostGator e envia a proposta por e-mail — tudo comandado pelo assistente de IA em linguagem natural.
+Prospecção semiautomática de clientes com site fraco: encontra negócios com alto potencial no Google Maps, cria um redesign premium, publica no seu hosting e envia a proposta por e-mail — tudo comandado pelo assistente de IA em linguagem natural.
 
 **Neutro em relação a agente.** É um toolkit portátil de skills + MCP, não um plugin preso a nenhum fornecedor. Funciona em qualquer agente/IDE de IA que suporte **servidores MCP** e **skills** (Claude Code / Claude Cowork, Gemini CLI / Antigravity, Cursor, Codex, opencode e outros). O CRM, o painel e as templates são Python/SQLite/HTML puros, sem nenhuma dependência específica de agente.
 
@@ -46,24 +46,24 @@ site-prospector/               ← esta pasta é o toolkit (fonte única da verd
     ├── maps-prospecting/
     ├── premium-redesign/
     ├── email-proposal/
-    ├── hostgator-deploy/
+    ├── deploy/
     ├── leads-dashboard/
     └── service-contract/
 ```
 
 ## Configuração
 
-Abra a pasta do projeto e diga ao assistente **"configurar o prospector"**. A skill `setup` coleta seus dados, a conexão HostGator e instala o painel local. Os servidores MCP e as skills já vêm ativos no modo — o empacotamento está descrito no prompt (`deepseek-harness/PROMPT.md`).
+Abra a pasta do projeto e diga ao assistente **"configurar o prospector"**. A skill `setup` coleta seus dados, o domínio de hosting (opcional) e instala o painel local. Os servidores MCP e as skills já vêm ativos no modo — o empacotamento está descrito no prompt (`deepseek-harness/PROMPT.md`).
 
 ## Como usar (linguagem natural)
 
 1. **"prospecta nutricionistas em São Paulo"** → navega no Google Maps, qualifica (nota alta + site ruim + e-mail) e alimenta o dashboard.
 2. **"redesenha os 5 melhores"** → redesign premium + editor visual + comparador antes/depois.
-3. **"publica na HostGator"** → sobe as páginas e a página-capa, verifica HTTPS.
+3. **"publica o site"** → prepara os arquivos, orienta o upload manual (qualquer hosting) e verifica HTTPS.
 4. **"manda a proposta"** → rascunho de e-mail anti-spam pronto para revisar.
 5. Depois: contrato, e o `dashboard.html` administra tudo (kanban + financeiro).
 
 ## Observações
 
-- A moeda aparece como `R$` (BRL) — o fluxo mira o mercado brasileiro (hospedagem HostGator, WhatsApp como canal de contato principal). Ajuste as templates se operar em outro país.
+- A moeda aparece como `R$` (BRL) — o fluxo mira o mercado brasileiro (WhatsApp como canal de contato principal, hosting próprio do usuário). Ajuste as templates se operar em outro país.
 - O `dashboard.html` é um painel único autocontido: kanban com drag & drop, edição, funil, contratos e financeiro. Duplo clique em `start-dashboard.bat` (Windows) / `start-dashboard.command` (macOS) roda com o banco de dados conectado.

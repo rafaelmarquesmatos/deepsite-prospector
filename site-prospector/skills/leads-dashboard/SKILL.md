@@ -1,6 +1,6 @@
 ---
 name: leads-dashboard
-description: This skill must be used to create and UPDATE the leads dashboard — the local control panel (SQLite + web page) where the user manages prospects, sites, publications and proposals. Trigger whenever any command from the toolkit changes lead data (skill maps-prospecting, skill premium-redesign, skill hostgator-deploy, skill email-proposal), or when the user says "dashboard", "panel", "my leads", "client control", "leads database".
+description: This skill must be used to create and UPDATE the leads dashboard — the local control panel (SQLite + web page) where the user manages prospects, sites, publications and proposals. Trigger whenever any command from the toolkit changes lead data (skill maps-prospecting, skill premium-redesign, skill deploy, skill email-proposal), or when the user says "dashboard", "panel", "my leads", "client control", "leads database".
 ---
 
 # Leads dashboard (SQLite + local page)
@@ -44,7 +44,7 @@ c.commit()
 EOF
 ```
    - `skill maps-prospecting` → inserts leads (`new`) and discarded (`discarded`, reason in `notes`). NEVER overwrite a lead whose status has already advanced.
-   - `skill premium-redesign` → `status='redesigned'` · `skill hostgator-deploy` → `status='published'`, `newUrl` · `skill email-proposal` → `status='proposed'`, `proposalDate`.
+   - `skill premium-redesign` → `status='redesigned'` · `skill deploy` → `status='published'`, `newUrl` · `skill email-proposal` → `status='proposed'`, `proposalDate`.
    - User reports replied/closed → `status='replied'|'closed'`, `value` (+ `maintenance` if there is a monthly fee).
    - `skill service-contract` → `contractStatus='sent'` + `contractDate`. Client signed → `contractStatus='signed'`. Payment received → `paid=1`.
 2. **Regenerate the snapshot**: read all leads from the database and rewrite `dashboard.html` from the template with the updated embedded JSON (`{"updated": "...", "leads": [...]}`) — it is the fallback for anyone opening without the server.

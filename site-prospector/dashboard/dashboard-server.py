@@ -62,10 +62,7 @@ class App(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path.split('?')[0] == '/api/config':
             cfg = read_config()
-            hg = dict(cfg.get('hostgator', {}))
-            hg['passwordSet'] = bool(hg.get('password'))
-            hg.pop('password', None)  # the password NEVER leaves the file
-            return self._json(200, {'provider': cfg.get('provider', {}), 'hostgator': hg})
+            return self._json(200, {'provider': cfg.get('provider', {}), 'hosting': dict(cfg.get('hosting', {}))})
         if self.path.split('?')[0] == '/api/leads':
             c = connection(); c.row_factory = sqlite3.Row
             rows = [dict(r) for r in c.execute('SELECT * FROM leads').fetchall()]; c.close()
@@ -83,18 +80,15 @@ class App(SimpleHTTPRequestHandler):
     def do_PUT(self):
         if self.path.split('?')[0] == '/api/config':
             cfg = read_config(); body = self._body()
-            if 'provider' in body or 'hostgator' in body:
+            if 'provider' in body or 'hosting' in body:
                 if 'provider' in body:
                     prov = cfg.get('provider', {})
                     prov.update({k: v for k, v in body['provider'].items() if isinstance(v, str)})
                     cfg['provider'] = prov
-                if 'hostgator' in body:
-                    hg = cfg.get('hostgator', {})
-                    for k, v in body['hostgator'].items():
-                        if not isinstance(v, str): continue
-                        if k == 'password' and v == '': continue  # blank = keep the current one
-                        hg[k] = v
-                    cfg['hostgator'] = hg
+                if 'hosting' in body:
+                    hosting = cfg.get('hosting', {})
+                    hosting.update({k: v for k, v in body['hosting'].items() if isinstance(v, str)})
+                    cfg['hosting'] = hosting
             else:  # compatibility: flat body = provider
                 prov = cfg.get('provider', {})
                 prov.update({k: v for k, v in body.items() if isinstance(v, str)})
