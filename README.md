@@ -8,15 +8,16 @@ A busca de negócios roda no **navegador** (MCP Playwright) — sem API key do G
 
 ## Feito para o DeepSeek Harness (creator mode)
 
-Este projeto foi pensado para rodar como um **modo** (agent preset) do [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), criado pelo **creator mode**. O prompt abaixo é o que você cola no creator mode para transformar o assistente no Site Prospector.
+Este projeto foi pensado para rodar como um **modo** (agent preset) do [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), criado pelo **creator mode**. A instalação é só colar o `PROMPT.md` no creator mode: o agente **clona este repo e instala o preset a partir dele** (não re-escreve o toolkit).
 
 O preset pronto fica em `deepseek-harness/`:
 
 ```
 deepseek-harness/
-├── PROMPT.md           ← o prompt do modo (em inglês)
+├── PROMPT.md           ← a spec que você cola no creator mode (em inglês)
 ├── preset.yml          ← nome e descrição do preset
-└── agent.cordis.yml    ← composição do agente (persona + tools + skills)
+├── agent.cordis.yml    ← composição do agente (persona + tools + MCP + skills)
+└── self-update.js      ← plugin de auto-update (roda no início de cada sessão)
 ```
 
 ### O prompt do modo
@@ -31,11 +32,12 @@ Cole o conteúdo de `deepseek-harness/PROMPT.md` no **creator mode** do DeepSeek
 
 ```
 deepseek-harness/              ← o modo pronto para o DeepSeek Harness (creator mode)
-├── PROMPT.md                  o prompt do modo (em inglês)
+├── PROMPT.md                  a spec que você cola no creator mode (em inglês)
 ├── preset.yml                 nome e descrição do preset
-└── agent.cordis.yml           persona + tools + skills
+├── agent.cordis.yml           persona + tools + MCP + skills
+└── self-update.js             plugin de auto-update (roda no início de cada sessão)
 
-site-prospector/               ← esta pasta é o toolkit
+site-prospector/               ← esta pasta é o toolkit (fonte única da verdade)
 ├── mcp_config.json            define os servidores MCP (CRM + navegador Playwright)
 ├── prospector_mcp.py          servidor MCP do CRM (SQLite)
 ├── dashboard/                 painel local (Python/SQLite) — pronto para copiar

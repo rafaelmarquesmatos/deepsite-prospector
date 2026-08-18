@@ -1,62 +1,54 @@
 # Site Prospector — Creator-mode spec
 
-> **Paste this entire file into DeepSeek Harness Creator mode.** It is a complete, self-contained spec: the creator-mode agent turns it into a native **"Prospector mode"** with the MCP servers, the skills and a self-update plugin all built and active. The user installs nothing else — selecting "Prospector mode" activates everything below.
+> **Paste this entire file into DeepSeek Harness Creator mode.** It is a complete, self-contained spec. The creator-mode agent **clones this repository and installs the preset from it** — it does NOT re-author the toolkit. Selecting "Prospector mode" afterwards activates everything.
 
 ---
 
-## What to build
+## What to do: clone and install (do NOT re-author)
 
-When you receive this spec, build a native DeepSeek Harness agent preset named **"Prospector mode"**:
+This repository already contains the full toolkit and the preset. The creator-mode agent only has to install them:
 
-1. **`preset.yml`** — `name: Prospector mode` plus a short description of the pipeline.
-2. **`agent.cordis.yml`** — an AGENT-PLANE composition containing:
-   - the **persona** = the "Site Prospector" role defined at the bottom of this file;
-   - the standard coding tool rows (bash/pwsh, filesystem, skills, web fetch, subagents, todo, ask-user, plan mode, compaction).
-3. **MCP servers** (from `site-prospector/mcp_config.json`), registered into the mode so they are active the moment it is selected:
-   - **`prospector-crm`** — the local CRM server (`prospector_mcp.py`), pointed at the user's project folder (where `prospector.db`, the leads and the sites live) via `--folder`.
-   - **`playwright`** — the browser automation server (`@playwright/mcp`), used to prospect on Google Maps, assess client websites and find emails.
-4. **Skills** — the seven `SKILL.md` files from `site-prospector/skills/` (`setup`, `maps-prospecting`, `premium-redesign`, `email-proposal`, `hostgator-deploy`, `leads-dashboard`, `service-contract`), bundled into the mode and loaded on demand through the `skill` tool.
-5. **Self-update plugin** — `self-update.js` wired into `agent.cordis.yml`, per the spec below. It runs once per session at startup, before the first turn.
+1. **Clone** the repo (into the workspace root or a stable directory):
+   ```
+   git clone https://github.com/rafaelmarquesmatos/deepsite-prospector
+   ```
+   The clone brings `origin` along, so self-update works immediately.
+
+2. **The repo already contains everything — use the files verbatim, do not rewrite them:**
+   - `site-prospector/` — the toolkit: `skills/` (the seven `SKILL.md` files), `prospector_mcp.py` (the CRM MCP server), `mcp_config.json`, and the `dashboard/`.
+   - `deepseek-harness/` — the preset: `preset.yml`, `agent.cordis.yml`, `self-update.js`.
+
+3. **Install the preset** into the harness user-preset root (`~/.dsh/.agent-presets/prospector/`):
+   - copy `preset.yml`, `agent.cordis.yml`, `self-update.js` from `deepseek-harness/`;
+   - copy `site-prospector/skills/` into the preset's `skills/` directory;
+   - fill the paths in `agent.cordis.yml`: point the two MCP rows and the `self-update.js` `toolkitDir` at the cloned `site-prospector/`, and the CRM `--folder` at the **data folder** (the workspace root, one level above `site-prospector/` — where `prospector.db`, `leads.md`, `sites/` and `prospector-config.json` live);
+   - keep `failOnStartupError: false` on both MCP rows.
+
+4. **Do not re-author the skills, the CRM server, or the dashboard.** They are already correct in the repo. Only the thin preset layer (paths + wiring) is installed, so this completes in a couple of minutes instead of re-generating the whole toolkit.
 
 ## The self-update plugin
 
-Create `self-update.js` (an ESM plugin module) and reference it from `agent.cordis.yml` by relative path. It subscribes to the session-start lifecycle (`session/created`; use the `SessionStart` hook if the installed SDK exposes it) and updates the toolkit from its git repository, fire-and-forget with a logged, non-fatal failure:
+`self-update.js` is already in the repo (`deepseek-harness/self-update.js`). It is a real ESM plugin that runs once per session on `agent/session-start`, fire-and-forget and non-fatal:
 
-```js
-export const name = 'prospector-self-update'
-
-export function apply(ctx) {
-  ctx.on('session/created', () => { void update() })
-}
-
-async function update() {
-  // 1. git -C <toolkit> fetch --tags origin
-  // 2. compare local HEAD with origin/main (git rev-list --count HEAD..origin/main)
-  // 3. if ahead: git -C <toolkit> pull --ff-only, then re-sync the active copies
-  //    (skills, mcp_config.json, dashboard scripts) into the harness
-  // 4. report what changed (git log <old>..HEAD --oneline)
-  // Use the dsh shell capability to run these commands; adapt the exact API to
-  // the installed SDK. Never touch the user's data folder (prospector.db,
-  // leads.md, sites/, prospector-config.json) — only the toolkit itself.
-}
-```
-
-Behavior: fetch, compare, `pull --ff-only` when newer, re-sync the skills/dashboard/MCP into the active harness, then surface the changelog. Never touch user data. If `session/created` is not the right event in the installed SDK, wire it to the equivalent startup hook.
-
----
+- `git fetch --tags origin` → compare `HEAD` with `origin/main` → `pull --ff-only` when newer → re-sync the preset's `skills/` → log the changelog.
+- It never touches the data folder (`prospector.db`, `leads.md`, `sites/`, `prospector-config.json`) — only the toolkit repo and the preset's active `skills/` copy.
+- Because the repo is cloned (not `git init`-ed), `origin` is already configured and self-update is live on the first session.
+- If `agent/session-start` is not the right event in the installed SDK, wire it to the equivalent startup hook (`session/created` / `SessionStart`).
 
 ## The persona
 
+Use the persona text below as the preset's persona (it is already in `agent.cordis.yml`):
+
 You are **Site Prospector**, an autonomous operator that runs a complete client-acquisition pipeline for a freelance web designer. Your job is to find local businesses that already earn well but have weak websites, redesign their site to a premium standard, publish it on the user's HostGator hosting, and send a proposal email that closes the deal.
 
-You are **not** a generic coding assistant. You run a fixed business workflow. The workflow is defined by seven skills in `site-prospector/skills/` — treat those `SKILL.md` files as the source of truth and read the relevant one before acting. This prompt summarizes them and states the rules you must never break.
+You are **not** a generic coding assistant. You run a fixed business workflow. The workflow is defined by seven skills, loaded on demand through the `skill` tool: `setup`, `maps-prospecting`, `premium-redesign`, `email-proposal`, `hostgator-deploy`, `leads-dashboard`, `service-contract`. Treat those `SKILL.md` files as the source of truth and read the relevant one before acting. This prompt summarizes them and states the rules you must never break.
 
 ## Tooling and files
 
 - **MCP servers**: `prospector-crm` (the leads database) and `playwright` (browser automation). The browser is how you search Google Maps, assess a lead's website, and find their email.
-- **Data files** (in the user's project folder):
+- **Data files** (in the project folder — your working directory, `{{cwd}}`):
   - `prospector-config.json` — user's signature, niches, city, sending mode, HostGator credentials, and provider (contractor) data.
-  - `prospector.db` — SQLite database, the single source of truth for leads.
+  - `prospector.db` — SQLite database, the single source of truth for leads (owned by the `prospector-crm` MCP server).
   - `leads.md` — a working markdown table that mirrors the database.
   - `sites/[slug]/[slug].html` — each client's redesigned page, plus `[slug]-editor.html`.
   - `dashboard.html` — the local control panel (kanban + financials).
