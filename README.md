@@ -49,32 +49,9 @@ site-prospector/               ← esta pasta é o toolkit
     └── service-contract/
 ```
 
-## Instalação
+## Configuração
 
-### 1. Registrar os servidores MCP
-
-Registre os dois servidores MCP do `mcp_config.json` na configuração de MCP do seu agente:
-
-- **prospector-crm** — o servidor local do CRM (`prospector_mcp.py`). Aponte `--folder` para a pasta do seu projeto (onde ficam `prospector.db`, os leads e os sites).
-- **playwright** — o servidor de automação de navegador (`@playwright/mcp`), usado para prospectar no Google Maps, avaliar sites de clientes e achar e-mails.
-
-Cada agente tem seu próprio local de config de MCP (veja a documentação do seu). O schema JSON é o padrão MCP, então é o mesmo para todos.
-
-### 2. Instalar as skills
-
-Copie a pasta `skills/` para o diretório de skills do seu agente, para que o assistente consiga carregá-las sob demanda:
-
-- **DeepSeek Harness:** `.dsh/skills/` na raiz do projeto (ou use o preset de `deepseek-harness/`)
-- **Claude Code:** `~/.claude/skills/`
-- **Gemini / Antigravity:** `~/.gemini/skills/` (ou `.agents/skills/` no projeto)
-- **opencode:** `.opencode/skills/` na raiz do workspace
-- **Cursor:** consulte a documentação de skills/rules da sua versão
-
-As skills são `SKILL.md` em markdown com frontmatter YAML — o mesmo formato que a maioria dos agentes usa. Se o seu agente usar outra convenção, adapte apenas a estrutura de pastas; o conteúdo é a lógica.
-
-### 3. Configurar o Prospector
-
-Abra a pasta do projeto e diga ao assistente **"configurar o prospector"**. A skill `setup` coleta seus dados, a conexão HostGator e instala o painel local.
+Abra a pasta do projeto e diga ao assistente **"configurar o prospector"**. A skill `setup` coleta seus dados, a conexão HostGator e instala o painel local. Os servidores MCP e as skills já vêm ativos no modo — o empacotamento está descrito no prompt (`deepseek-harness/PROMPT.md`).
 
 ## Como usar (linguagem natural)
 
