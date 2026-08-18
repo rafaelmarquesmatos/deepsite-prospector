@@ -1,4 +1,4 @@
-# The `site-prospector` agent preset for DeepSeek Harness.
+# The "Prospector mode" agent preset for DeepSeek Harness.
 #
 # This is an AGENT-PLANE composition. The host composition keeps the registries,
 # sandbox, approval stack, persistence and model route; this file contributes
@@ -7,9 +7,11 @@
 # It is based on the standard coding preset, with the persona replaced by the
 # Site Prospector operator. The full operating instructions live in
 # `deepseek-harness/PROMPT.md` and in the `site-prospector/skills/` folder.
-# Register the two MCP servers (`prospector-crm`, `playwright`) from
-# `site-prospector/mcp_config.json` in the harness MCP settings, and make the
-# skills discoverable by copying `site-prospector/skills/*` into `.dsh/skills/`.
+#
+# For a native "Prospector mode", register the two MCP servers (`prospector-crm`,
+# `playwright`) from `site-prospector/mcp_config.json` in the harness MCP
+# settings, and bundle `site-prospector/skills/*` into the preset so everything
+# is active the moment the user selects the mode.
 
 # ── identity ────────────────────────────────────────────────────────────────
 
